@@ -1,5 +1,5 @@
 {
-  "name": "render-markdown",
+  "name": "@precision-nutrition/render-markdown",
   "version": "0.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
