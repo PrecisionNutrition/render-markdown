@@ -18,7 +18,7 @@ test('renders markdown', function(assert) {
 
   assert.equal(
     ret.innerHTML,
-    '<h1>foo</h1>\n'
+    '<h1>foo</h1>'
   );
 });
 
@@ -27,10 +27,16 @@ test('works with an empty param', function(assert) {
 
   let ret = find('*');
 
-  assert.equal(
-    ret.innerHTML,
-    ''
-  );
+  let innerHTML = ret.innerHTML;
+
+  if (innerHTML === '<!---->') {
+    assert.ok(true, 'Ember 2.8 has comments as inner HTML, this is okay');
+  } else {
+    assert.equal(
+      ret.innerHTML,
+      ''
+    );
+  }
 });
 
 test('it supports attributes on elements', function(assert) {
