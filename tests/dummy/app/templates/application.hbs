@@ -1,3 +1,17 @@
-<h2 id="title">Welcome to Ember</h2>
+<h1>Simple Markdown</h1>
 
-{{outlet}}
+<div data-test-selector="simple">
+  {{render-markdown myMarkdownAttr}}
+</div>
+
+<h1>Blank param</h1>
+
+<div data-test-selector="blank">
+  {{render-markdown}}
+</div>
+
+<h1>With an attr</h1>
+
+<div data-test-selector="with-attr">
+  {{render-markdown anotherMarkdownAttr}}
+</div>

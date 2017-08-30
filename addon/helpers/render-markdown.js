@@ -41,12 +41,15 @@ export function renderMarkdown([raw]) {
 
   renderer.use(markdownItAttrs);
 
-  let markdown = isEmpty(raw) ? '' : raw;
-  let html = renderer.render(markdown);
+  if (isEmpty(raw)) {
+    return '';
+  } else {
+    let html = renderer.render(raw);
 
-  html = targetLinks(html);
+    html = targetLinks(html);
 
-  return htmlSafe(html);
+    return htmlSafe(html);
+  }
 }
 
 export default helper(renderMarkdown);
