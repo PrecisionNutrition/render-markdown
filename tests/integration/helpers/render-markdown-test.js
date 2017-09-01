@@ -22,6 +22,43 @@ test('renders markdown', function(assert) {
   );
 });
 
+test('more complicated markdown', function(assert) {
+  this.set('raw', `#  Hey guy
+How are you doing?
+
+Hopefully all is well.
+
+This is a list:
+
+* Foo
+
+* [*bar*](http://example.com)
+
+Be cool,
+
+J.`);
+
+  let expectedRet = `<h1>Hey guy</h1><p>How are you doing?</p><p>Hopefully all is well.</p><p>This is a list:</p><ul>
+<li>
+<p>Foo</p>
+</li>
+<li>
+<p><a href="http://example.com" target="_blank" rel="noopener noreferrer"><em>bar</em></a></p>
+</li>
+</ul><p>Be cool,</p><p>J.</p>`;
+
+  this.render(hbs`{{render-markdown raw}}`);
+
+  let ret = find('*');
+
+  let innerHTML = ret.innerHTML;
+
+  assert.equal(
+    innerHTML,
+    expectedRet
+  );
+});
+
 test('works with an empty param', function(assert) {
   this.render(hbs`{{render-mardown}}`);
 
