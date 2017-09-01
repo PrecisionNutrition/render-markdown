@@ -22,16 +22,22 @@ function parseHTML(str) {
 
 function targetLinks(html) {
   let origin = window.location.origin;
-  let [content] = parseHTML(html);
+  let nodes = parseHTML(html);
+  let finishedHTML = '';
 
-  let nodes = content.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
+  for (let i = 0; i < nodes.length; i++) {
+    let node = nodes.item(i);
+    let links = node.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
 
-  nodes.forEach(function(node) {
-    node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener noreferrer');
-  });
+    links.forEach(function(node) {
+      node.setAttribute('target', '_blank');
+      node.setAttribute('rel', 'noopener noreferrer');
+    });
 
-  return content.outerHTML;
+    finishedHTML += node.outerHTML;
+  }
+
+  return finishedHTML;
 }
 
 export function renderMarkdown([raw]) {
