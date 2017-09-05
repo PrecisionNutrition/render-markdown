@@ -17,7 +17,7 @@ test('renders markdown', function(assert) {
   let ret = find('*');
 
   assert.equal(
-    ret.innerHTML,
+    ret.innerHTML.trim(),
     '<h1>foo</h1>'
   );
 });
@@ -38,20 +38,26 @@ Be cool,
 
 J.`);
 
-  let expectedRet = `<h1>Hey guy</h1><p>How are you doing?</p><p>Hopefully all is well.</p><p>This is a list:</p><ul>
+  let expectedRet = `<h1>Hey guy</h1>
+<p>How are you doing?</p>
+<p>Hopefully all is well.</p>
+<p>This is a list:</p>
+<ul>
 <li>
 <p>Foo</p>
 </li>
 <li>
 <p><a href="http://example.com" target="_blank" rel="noopener noreferrer"><em>bar</em></a></p>
 </li>
-</ul><p>Be cool,</p><p>J.</p>`;
+</ul>
+<p>Be cool,</p>
+<p>J.</p>`;
 
   this.render(hbs`{{render-markdown raw}}`);
 
   let ret = find('*');
 
-  let innerHTML = ret.innerHTML;
+  let innerHTML = ret.innerHTML.trim();
 
   assert.equal(
     innerHTML,
