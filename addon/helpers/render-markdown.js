@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import jquery from 'jquery';
 import markdownit from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs';
 
@@ -12,32 +13,29 @@ const {
   },
 } = Ember;
 
-function parseHTML(str) {
-  let tmp = document.implementation.createHTMLDocument();
+function defuckifyHTML(domNodes) {
+  if (!domNodes) {
+    return '';
+  } else {
+    let container = jquery('<span>');
 
-  tmp.body.innerHTML = str;
+    jquery.each(domNodes, function(_, val) {
+      container.append(val);
+    });
 
-  return tmp.body.children;
+    return container.html();
+  }
 }
 
 function targetLinks(html) {
   let origin = window.location.origin;
-  let nodes = parseHTML(html);
-  let finishedHTML = '';
+  let nodes = jquery.parseHTML(html);
 
-  for (let i = 0; i < nodes.length; i++) {
-    let node = nodes.item(i);
-    let links = node.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
+  jquery(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`, nodes)
+    .attr('target', '_blank')
+    .attr('rel', 'noopener noreferrer');
 
-    links.forEach(function(node) {
-      node.setAttribute('target', '_blank');
-      node.setAttribute('rel', 'noopener noreferrer');
-    });
-
-    finishedHTML += node.outerHTML;
-  }
-
-  return finishedHTML;
+  return defuckifyHTML(nodes);
 }
 
 export function renderMarkdown([raw]) {
