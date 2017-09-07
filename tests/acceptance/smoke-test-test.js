@@ -34,5 +34,12 @@ test('smoke test', function(assert) {
       withAttr.rel,
       'noopener noreferrer'
     );
+
+    let withoutMarkdown = find('[data-test-selector="strip-markdown"]').get(0);
+
+    assert.equal(
+      withoutMarkdown.textContent.trim(),
+      'hello'
+    );
   });
 });
