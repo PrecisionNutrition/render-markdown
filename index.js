@@ -8,13 +8,13 @@ const MergeTrees = require('broccoli-merge-trees');
 module.exports = {
   name: 'render-markdown',
 
-  included(app) {
+  included() {
     this._super.apply(this, arguments);
 
-    app.import('vendor/markdown-it.js');
-    app.import('vendor/shims/markdown-it.js');
-    app.import('vendor/markdown-it-attrs.browser.js');
-    app.import('vendor/shims/markdown-it-attrs.js');
+    this.import('vendor/markdown-it.js');
+    this.import('vendor/shims/markdown-it.js');
+    this.import('vendor/markdown-it-attrs.browser.js');
+    this.import('vendor/shims/markdown-it-attrs.js');
   },
 
   treeForVendor(vendorTree) {
