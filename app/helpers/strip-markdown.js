@@ -1,1 +1,1 @@
-export { default, stripMarkdown } from 'render-markdown/helpers/strip-markdown';
+export { default, stripMarkdown } from '@precision-nutrition/render-markdown/helpers/strip-markdown';

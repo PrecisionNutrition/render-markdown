@@ -1,1 +1,1 @@
-export { default, renderMarkdown } from 'render-markdown/helpers/render-markdown';
+export { default, renderMarkdown } from '@precision-nutrition/render-markdown/helpers/render-markdown';

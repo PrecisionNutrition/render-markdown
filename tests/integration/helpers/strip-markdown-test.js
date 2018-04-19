@@ -1,30 +1,27 @@
-
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import {
-  find,
-} from 'ember-native-dom-helpers';
 
-moduleForComponent('strip-markdown', 'helper:strip-markdown', {
-  integration: true
-});
+module('helper:strip-markdown', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it strips markdown and renders plain text', function(assert) {
-  this.set('markdown', `*hey*
+  test('it strips markdown and renders plain text', async function(assert) {
+    this.set('markdown', `*hey*
 
-* Yo
-* Dawg`);
+  * Yo
+  * Dawg`);
 
-  let expected = `hey
+    let expected = `hey
 
 Yo
 Dawg`;
 
-  this.render(hbs`{{strip-markdown markdown}}`);
+    await render(hbs`{{strip-markdown markdown}}`);
 
-  assert.equal(
-    find('*').textContent.trim(),
-    expected
-  );
+    assert.equal(
+      find('*').textContent.trim(),
+      expected
+    );
+  });
 });
-
