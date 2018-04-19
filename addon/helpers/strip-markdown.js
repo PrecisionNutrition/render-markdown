@@ -1,10 +1,7 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
+import { isEmpty } from '@ember/utils';
 import markdownit from 'markdown-it';
 import jquery from 'jquery';
-
-const {
-  isEmpty,
-} = Ember;
 
 export function stripMarkdown([markdown]/*, hash*/) {
   if (isEmpty(markdown)) {
@@ -21,4 +18,4 @@ export function stripMarkdown([markdown]/*, hash*/) {
   return stripped;
 }
 
-export default Ember.Helper.helper(stripMarkdown);
+export default buildHelper(stripMarkdown);

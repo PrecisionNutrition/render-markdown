@@ -1,4 +1,3 @@
-/* eslint-env node */
 'use strict';
 
 const path = require('path');
@@ -6,7 +5,7 @@ const Funnel = require('broccoli-funnel');
 const MergeTrees = require('broccoli-merge-trees');
 
 module.exports = {
-  name: 'render-markdown',
+  name: '@precision-nutrition/render-markdown',
 
   included() {
     this._super.apply(this, arguments);

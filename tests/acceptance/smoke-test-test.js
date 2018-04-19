@@ -1,24 +1,25 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { find, visit } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
 
-moduleForAcceptance('Acceptance | smoke test');
+module('Acceptance | smoke test', function(hooks) {
+  setupApplicationTest(hooks);
 
-test('smoke test', function(assert) {
-  visit('/');
+  test('smoke test', async function(assert) {
+    await visit('/');
 
-  andThen(function() {
-    let simple = find('[data-test-selector="simple"]').get(0);
+    let simple = find('[data-test-selector="simple"]');
 
     assert.equal(
       simple.innerHTML.trim(),
       '<p><em>hello</em></p>'
     );
 
-    let blank = find('[data-test-selector="blank"]').get(0);
+    let blank = find('[data-test-selector="blank"]');
 
     assert.ok(blank);
 
-    let withAttr = find('[data-test-selector="with-attr"] a').get(0);
+    let withAttr = find('[data-test-selector="with-attr"] a');
 
     assert.equal(
       withAttr.dataset.foo,
@@ -35,7 +36,7 @@ test('smoke test', function(assert) {
       'noopener noreferrer'
     );
 
-    let withoutMarkdown = find('[data-test-selector="strip-markdown"]').get(0);
+    let withoutMarkdown = find('[data-test-selector="strip-markdown"]');
 
     assert.equal(
       withoutMarkdown.textContent.trim(),

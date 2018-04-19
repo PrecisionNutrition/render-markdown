@@ -1,44 +1,41 @@
-
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import {
-  find,
-} from 'ember-native-dom-helpers';
 
-moduleForComponent('render-markdown', 'helper:render-markdown', {
-  integration: true
-});
+module('helper:render-markdown', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('renders markdown', function(assert) {
-  this.set('raw', '# foo');
+  test('renders markdown', async function(assert) {
+    this.set('raw', '# foo');
 
-  this.render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown raw}}`);
 
-  let ret = find('*');
+    let ret = find('*');
 
-  assert.equal(
-    ret.innerHTML.trim(),
-    '<h1>foo</h1>'
-  );
-});
+    assert.equal(
+      ret.innerHTML.trim(),
+      '<h1>foo</h1>'
+    );
+  });
 
-test('more complicated markdown', function(assert) {
-  this.set('raw', `#  Hey guy
-How are you doing?
+  test('more complicated markdown', async function(assert) {
+    this.set('raw', `#  Hey guy
+  How are you doing?
 
-Hopefully all is well.
+  Hopefully all is well.
 
-This is a list:
+  This is a list:
 
-* Foo
+  * Foo
 
-* [*bar*](http://example.com)
+  * [*bar*](http://example.com)
 
-Be cool,
+  Be cool,
 
-J.`);
+  J.`);
 
-  let expectedRet = `<h1>Hey guy</h1>
+    let expectedRet = `<h1>Hey guy</h1>
 <p>How are you doing?</p>
 <p>Hopefully all is well.</p>
 <p>This is a list:</p>
@@ -53,78 +50,81 @@ J.`);
 <p>Be cool,</p>
 <p>J.</p>`;
 
-  this.render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown raw}}`);
 
-  let ret = find('*');
+    let ret = find('*');
 
-  let innerHTML = ret.innerHTML.trim();
+    let innerHTML = ret.innerHTML.trim();
 
-  assert.equal(
-    innerHTML,
-    expectedRet
-  );
-});
-
-test('works with an empty param', function(assert) {
-  this.render(hbs`{{render-mardown}}`);
-
-  let ret = find('*');
-
-  let innerHTML = ret.innerHTML;
-
-  if (innerHTML === '<!---->') {
-    assert.ok(true, 'Ember 2.8 has comments as inner HTML, this is okay');
-  } else {
     assert.equal(
-      ret.innerHTML,
-      ''
+      innerHTML,
+      expectedRet
     );
-  }
-});
+  });
 
-test('it supports attributes on elements', function(assert) {
-  let expectedHtml = '<p><a href="example.com" target="new">a link</a></p>';
+  test('works with an empty param', async function(assert) {
+    await render(hbs`{{render-mardown}}`);
 
-  this.set('raw', '[a link](example.com){target=new}');
+    let ret = find('*');
 
-  this.render(hbs`{{render-markdown raw}}`);
+    let innerHTML = ret.innerHTML;
 
-  let ret = find('*');
+    if (innerHTML === '<!---->') {
+      assert.ok(true, 'Ember 2.8 has comments as inner HTML, this is okay');
+    } else {
+      assert.equal(
+        ret.innerHTML,
+        ''
+      );
+    }
+  });
 
-  let retHTML = ret.innerHTML.trim();
+  test('it supports attributes on elements', async function(assert) {
+    let expectedHtml = '<p><a href="example.com" target="new">a link</a></p>';
 
-  assert.equal(
-    retHTML,
-    expectedHtml,
-    'markdown-it-attrs plugin is not working'
-  );
-});
+    this.set('raw', '[a link](example.com){target=new}');
 
-test('it assigns a target attribute to links', function(assert) {
-  this.set('raw', '[Hey](http://example.com)');
+    await render(hbs`{{render-markdown raw}}`);
 
-  this.render(hbs`{{render-markdown raw}}`);
+    let ret = find('*');
 
-  let anchor = find('a');
+    let retHTML = ret.innerHTML.trim();
 
-  assert.equal(
-    anchor.getAttribute('target'),
-    '_blank'
-  );
+    assert.equal(
+      retHTML,
+      expectedHtml,
+      'markdown-it-attrs plugin is not working'
+    );
+  });
 
-  this.set('raw', '[Hey](mailto:joe@example.com)');
+  test('it assigns a target attribute to regular links', async function(assert) {
+    this.set('raw', '[Hey](http://example.com)');
 
-  this.render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown raw}}`);
 
-  anchor = find('a');
+    let anchor = find('a');
 
-  assert.equal(
-    anchor.getAttribute('target'),
-    '_blank'
-  );
+    assert.equal(
+      anchor.getAttribute('target'),
+      '_blank'
+    );
+  });
 
-  assert.equal(
-    anchor.getAttribute('rel'),
-    'noopener noreferrer'
-  );
+  test('it assigns a target to mailto links', async function(assert) {
+    this.set('raw', '[Hey](mailto:joe@example.com)');
+
+    await render(hbs`{{render-markdown raw}}`);
+
+    let anchor = find('a');
+
+    assert.equal(
+      anchor.getAttribute('target'),
+      '_blank'
+    );
+
+    assert.equal(
+      anchor.getAttribute('rel'),
+      'noopener noreferrer'
+    );
+  });
 });
