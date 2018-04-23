@@ -1,6 +1,6 @@
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
-import { htmlSafe } from '@ember/template';
+import { htmlSafe } from '@ember/string';
 import jquery from 'jquery';
 import markdownit from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs';
