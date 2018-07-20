@@ -38,9 +38,6 @@ module('Acceptance | smoke test', function(hooks) {
 
     let withoutMarkdown = find('[data-test-selector="strip-markdown"]');
 
-    assert.equal(
-      withoutMarkdown.textContent.trim(),
-      'hello'
-    );
+    assert.dom(withoutMarkdown).hasText('hello');
   });
 });

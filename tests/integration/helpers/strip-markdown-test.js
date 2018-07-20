@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('helper:strip-markdown', function(hooks) {
@@ -19,9 +19,6 @@ Dawg`;
 
     await render(hbs`{{strip-markdown markdown}}`);
 
-    assert.equal(
-      find('*').textContent.trim(),
-      expected
-    );
+    assert.dom('*').hasText(expected);
   });
 });
