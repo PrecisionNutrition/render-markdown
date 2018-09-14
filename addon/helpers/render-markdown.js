@@ -1,33 +1,24 @@
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/string';
-import jquery from 'jquery';
 import markdownit from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs';
 
-function defuckifyHTML(domNodes) {
-  if (!domNodes) {
-    return '';
-  } else {
-    let container = jquery('<span>');
-
-    jquery.each(domNodes, function(_, val) {
-      container.append(val);
-    });
-
-    return container.html();
-  }
-}
-
 function targetLinks(html) {
   let origin = window.location.origin;
-  let nodes = jquery.parseHTML(html);
 
-  jquery(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`, nodes)
-    .attr('target', '_blank')
-    .attr('rel', 'noopener noreferrer');
+  let parser = new DOMParser();
+  let doc = parser.parseFromString(html, 'text/html');
+  let nodes = doc.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
 
-  return defuckifyHTML(nodes);
+  nodes.forEach(function(node) {
+    node.setAttribute('target', '_blank');
+    node.setAttribute('rel', 'noopener noreferrer');
+  });
+
+  let newHTML = doc.body.innerHTML;
+
+  return newHTML;
 }
 
 export function renderMarkdown([raw]) {
