@@ -5,7 +5,7 @@ const Funnel = require('broccoli-funnel');
 const MergeTrees = require('broccoli-merge-trees');
 
 module.exports = {
-  name: '@precision-nutrition/render-markdown',
+  name: require('./package').name,
 
   included() {
     this._super.apply(this, arguments);
