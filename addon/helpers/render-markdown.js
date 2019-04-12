@@ -11,10 +11,12 @@ function targetLinks(html) {
   let doc = parser.parseFromString(html, 'text/html');
   let nodes = doc.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
 
-  nodes.forEach(function(node) {
+  for (let i = 0; i < nodes.length; i++) {
+    let node = nodes[i];
+
     node.setAttribute('target', '_blank');
     node.setAttribute('rel', 'noopener noreferrer');
-  });
+  }
 
   let newHTML = doc.body.innerHTML;
 
