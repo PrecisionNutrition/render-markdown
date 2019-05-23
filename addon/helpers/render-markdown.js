@@ -18,9 +18,8 @@ function targetLinks(html) {
     node.setAttribute('rel', 'noopener noreferrer');
   }
 
-  let newHTML = doc.body.innerHTML;
-
-  return newHTML;
+  // IE 11 returns NULL on empty string :/
+  return doc.body ? doc.body.innerHTML : '';
 }
 
 export function renderMarkdown([raw]) {
