@@ -28,7 +28,7 @@
     "ember-cli-babel": "^7.7.3",
     "ember-cli-htmlbars": "^3.0.1",
     "markdown-it": "^8.4.0",
-    "markdown-it-attrs": "^1.1.0"
+    "markdown-it-attrs": "^2.4.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",
