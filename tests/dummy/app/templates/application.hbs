@@ -1,7 +1,7 @@
 <h1>Simple Markdown</h1>
 
 <div data-test-selector="simple">
-  {{render-markdown myMarkdownAttr}}
+  {{render-markdown this.myMarkdownAttr}}
 </div>
 
 <h1>Blank param</h1>
@@ -13,11 +13,11 @@
 <h1>With an attr</h1>
 
 <div data-test-selector="with-attr">
-  {{render-markdown anotherMarkdownAttr}}
+  {{render-markdown this.anotherMarkdownAttr}}
 </div>
 
 <h1>Stripping Markdown</h1>
 
 <div data-test-selector="strip-markdown">
-  {{strip-markdown myMarkdownAttr}}
+  {{strip-markdown this.myMarkdownAttr}}
 </div>

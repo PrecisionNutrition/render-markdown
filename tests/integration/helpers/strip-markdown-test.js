@@ -15,10 +15,15 @@ module('helper:strip-markdown', function(hooks) {
     let expected = `hey
 
 Yo
-Dawg`;
+Dawg
+
+`;
 
     await render(hbs`{{strip-markdown markdown}}`);
 
-    assert.dom('*').hasText(expected);
+    assert.equal(
+      this.element.textContent,
+      expected
+    );
   });
 });

@@ -11,10 +11,8 @@ module('helper:render-markdown', function(hooks) {
 
     await render(hbs`{{render-markdown raw}}`);
 
-    let ret = find('*');
-
     assert.equal(
-      ret.innerHTML.trim(),
+      this.element.innerHTML.trim(),
       '<h1>foo</h1>'
     );
   });
@@ -52,9 +50,7 @@ module('helper:render-markdown', function(hooks) {
 
     await render(hbs`{{render-markdown raw}}`);
 
-    let ret = find('*');
-
-    let innerHTML = ret.innerHTML.trim();
+    let innerHTML = this.element.innerHTML.trim();
 
     assert.equal(
       innerHTML,
@@ -65,18 +61,10 @@ module('helper:render-markdown', function(hooks) {
   test('works with an empty param', async function(assert) {
     await render(hbs`{{render-mardown}}`);
 
-    let ret = find('*');
-
-    let innerHTML = ret.innerHTML;
-
-    if (innerHTML === '<!---->') {
-      assert.ok(true, 'Ember 2.8 has comments as inner HTML, this is okay');
-    } else {
-      assert.equal(
-        ret.innerHTML,
-        ''
-      );
-    }
+    assert.equal(
+      this.element.innerHTML,
+      ''
+    );
   });
 
   test('it supports attributes on elements', async function(assert) {
@@ -86,9 +74,7 @@ module('helper:render-markdown', function(hooks) {
 
     await render(hbs`{{render-markdown raw}}`);
 
-    let ret = find('*');
-
-    let retHTML = ret.innerHTML.trim();
+    let retHTML = this.element.innerHTML.trim();
 
     assert.equal(
       retHTML,
