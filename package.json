@@ -1,6 +1,6 @@
 {
   "name": "@precision-nutrition/render-markdown",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Our kitchen sink markdown renderer for Ember apps",
   "keywords": [
     "ember-addon"
