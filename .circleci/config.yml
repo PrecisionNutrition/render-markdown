@@ -80,6 +80,18 @@ jobs:
           command: |
             yarn test
 
+  run_classic_tests:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: 'Run Tests for Classic Ember'
+          command: |
+            yarn ember try:one ember-classic --skip-cleanup
+
   run_release_tests:
     <<: *defaults
 
@@ -143,5 +155,9 @@ workflows:
             - run_default_tests
 
       - run_canary_tests:
+          requires:
+            - run_default_tests
+
+      - run_classic_tests:
           requires:
             - run_default_tests
