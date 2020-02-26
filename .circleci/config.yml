@@ -7,7 +7,7 @@
 defaults: &defaults
   docker:
     # specify the version you desire here
-    - image: circleci/node:8-browsers
+    - image: circleci/node:12-browsers
       environment:
         JOBS: 2
         BROWSERSTACK_USERNAME: pntechteam1
@@ -65,8 +65,8 @@ jobs:
           at: .
 
       - run:
-          name: 'Run JS Lint'
-          command: yarn lint:js
+          name: 'Run Lint'
+          command: yarn lint
 
   run_default_tests:
     <<: *defaults
@@ -77,8 +77,29 @@ jobs:
 
       - run:
           name: 'Run Tests for Default Ember'
-          command: |
-            yarn test
+          command: yarn ember try:one ember-release
+
+  run_old_lts_tests:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: 'Run Tests for Old LTS Ember'
+          command: yarn ember try:one ember-lts-3.12
+
+  run_new_lts_tests:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: 'Run Tests for New LTS Ember'
+          command: yarn ember try:one ember-lts-3.16
 
   run_classic_tests:
     <<: *defaults
@@ -126,7 +147,19 @@ jobs:
       - run:
           name: 'Run Tests for Ember Canary'
           command: |
-            ./node_modules/ember-cli/bin/ember try:one ember-canary --skip-cleanup
+            yarn ember try:one ember-canary --skip-cleanup
+
+  run_with_jquery:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: 'Run Tests for Ember with jQuery'
+          command: |
+            yarn ember try:one ember-default-with-jquery --skip-cleanup
 
 workflows:
   version: 2
@@ -148,16 +181,28 @@ workflows:
 
       - run_release_tests:
           requires:
-            - run_default_tests
+            - install_dependencies
 
       - run_beta_tests:
           requires:
-            - run_default_tests
+            - install_dependencies
 
       - run_canary_tests:
           requires:
-            - run_default_tests
+            - install_dependencies
 
       - run_classic_tests:
           requires:
-            - run_default_tests
+            - install_dependencies
+
+      - run_with_jquery:
+          requires:
+              - install_dependencies
+
+      - run_old_lts_tests:
+          requires:
+            - install_dependencies
+
+      - run_new_lts_tests:
+          requires:
+            - install_dependencies
