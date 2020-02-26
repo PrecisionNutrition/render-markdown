@@ -2,7 +2,8 @@ import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/string';
 import markdownit from 'markdown-it';
-import markdownItAttrs from 'markdown-it-attrs';
+import attrs from 'markdown-it-attrs';
+import underline from 'markdown-it-underline';
 
 function targetLinks(html) {
   let origin = window.location.origin;
@@ -23,11 +24,9 @@ function targetLinks(html) {
 }
 
 export function renderMarkdown([raw]) {
-  const renderer = markdownit({
-    html: true
-  });
-
-  renderer.use(markdownItAttrs);
+  const renderer = markdownit({ html: true })
+    .use(attrs)
+    .use(underline);
 
   if (isEmpty(raw)) {
     return '';

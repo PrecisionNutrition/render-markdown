@@ -113,4 +113,15 @@ module('helper:render-markdown', function(hooks) {
       'noopener noreferrer'
     );
   });
+
+  test('renders `<u` for underlined text', async function(assert) {
+    this.set('raw', '_yo_');
+
+    await render(hbs`{{render-markdown raw}}`);
+
+    assert
+      .dom('u')
+      .exists()
+      .hasText('yo');
+  });
 });
