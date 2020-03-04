@@ -9,7 +9,7 @@ module('helper:render-markdown', function(hooks) {
   test('renders markdown', async function(assert) {
     this.set('raw', '# foo');
 
-    await render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown this.raw}}`);
 
     assert.equal(
       this.element.innerHTML.trim(),
@@ -48,7 +48,7 @@ module('helper:render-markdown', function(hooks) {
 <p>Be cool,</p>
 <p>J.</p>`;
 
-    await render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown this.raw}}`);
 
     let innerHTML = this.element.innerHTML.trim();
 
@@ -72,7 +72,7 @@ module('helper:render-markdown', function(hooks) {
 
     this.set('raw', '[a link](example.com){target=new}');
 
-    await render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown this.raw}}`);
 
     let retHTML = this.element.innerHTML.trim();
 
@@ -86,7 +86,7 @@ module('helper:render-markdown', function(hooks) {
   test('it assigns a target attribute to regular links', async function(assert) {
     this.set('raw', '[Hey](http://example.com)');
 
-    await render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown this.raw}}`);
 
     let anchor = find('a');
 
@@ -99,7 +99,7 @@ module('helper:render-markdown', function(hooks) {
   test('it assigns a target to mailto links', async function(assert) {
     this.set('raw', '[Hey](mailto:joe@example.com)');
 
-    await render(hbs`{{render-markdown raw}}`);
+    await render(hbs`{{render-markdown this.raw}}`);
 
     let anchor = find('a');
 
@@ -112,16 +112,5 @@ module('helper:render-markdown', function(hooks) {
       anchor.getAttribute('rel'),
       'noopener noreferrer'
     );
-  });
-
-  test('renders `<u` for underlined text', async function(assert) {
-    this.set('raw', '_yo_');
-
-    await render(hbs`{{render-markdown raw}}`);
-
-    assert
-      .dom('u')
-      .exists()
-      .hasText('yo');
   });
 });
