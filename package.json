@@ -14,7 +14,6 @@
   },
   "scripts": {
     "build": "ember build --environment=production",
-    "easy-publish": "npm publish --access public",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "lint": "yarn lint:js && yarn lint:hbs",
