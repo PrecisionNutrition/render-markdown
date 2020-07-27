@@ -96,21 +96,22 @@ module('helper:render-markdown', function(hooks) {
     );
   });
 
-  test('it assigns a target to mailto links', async function(assert) {
-    this.set('raw', '[Hey](mailto:joe@example.com)');
+  test('it parses definitions', async function(assert) {
+    this.set('raw', `This is a [definition: a statement of the exact meaning of a word, especially in a dictionary]definition[/definition]`);
 
-    await render(hbs`{{render-markdown this.raw}}`);
+      let expectedRet = `<p>This is a 
+      <span class="Definition" data-term="definition" data-definition="a statement of the exact meaning of a word, especially in a dictionary">
+        definition
+      </span>
+    </p>`;
 
-    let anchor = find('a');
+      await render(hbs`{{render-markdown this.raw}}`);
 
-    assert.equal(
-      anchor.getAttribute('target'),
-      '_blank'
-    );
+      let innerHTML = this.element.innerHTML.trim();
 
-    assert.equal(
-      anchor.getAttribute('rel'),
-      'noopener noreferrer'
-    );
-  });
+      assert.equal(
+        innerHTML,
+        expectedRet
+      );
+    });
 });
