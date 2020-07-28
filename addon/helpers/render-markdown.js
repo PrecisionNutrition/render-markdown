@@ -37,7 +37,7 @@ export function parseDefinitions(html) {
     let { definition, term } = match.groups;
     // FIXME: escape content
     let replacement = `
-      <span class="Definition" data-tippy-title="${term}" data-tippy-content="${definition}">
+      <span class="Definition" data-term="${term}" data-definition="${definition}">
         ${term}
       </span>
     `;
