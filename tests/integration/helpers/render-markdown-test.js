@@ -117,11 +117,9 @@ module('helper:render-markdown', function(hooks) {
   test('it parses definitions', async function(assert) {
     this.set('raw', `This is a [definition: a statement of the exact meaning of a word, especially in a dictionary]definition[/definition]`);
 
-    let expectedRet = `<p>This is a
-      <span class="Definition" data-term="definition" data-definition="a statement of the exact meaning of a word, especially in a dictionary">
+    let expectedRet = `<p>This is a <span class="Definition" data-term="definition" data-definition="a statement of the exact meaning of a word, especially in a dictionary">
         definition
-      </span>
-    </p>`;
+      </span></p>`;
 
     await render(hbs`{{render-markdown this.raw}}`);
 
@@ -132,4 +130,36 @@ module('helper:render-markdown', function(hooks) {
       expectedRet
     );
   });
+
+  test('it escapes definitions', async function(assert) {
+    this.set('raw', `This is a [definition: a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`);
+
+    let expectedRet = `<p>This is a <span class="Definition" data-term="definition" data-definition="a statement of the exact &amp;quot; meaning of a word, especially in a dictionary">
+        definition
+      </span></p>`;
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let innerHTML = this.element.innerHTML.trim();
+
+    assert.equal(
+      innerHTML,
+      expectedRet
+    );
+  });
+
+  test('it does not replace improperly formatted definitions', async function(assert) {
+    this.set('raw', `This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`);
+
+    let expectedRet = `<p>This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]</p>`;
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let innerHTML = this.element.innerHTML.trim();
+
+    assert.equal(
+      innerHTML,
+      expectedRet
+    );
+  })
 });

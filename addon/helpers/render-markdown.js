@@ -47,7 +47,7 @@ export function parseDefinitions(html) {
       <span class="Definition" data-term="${escapeExpression(term)}" data-definition="${escapeExpression(definition)}">
         ${term}
       </span>
-    `;
+    `.trim();
     html = html.replace(match[0], replacement);
   }
 
