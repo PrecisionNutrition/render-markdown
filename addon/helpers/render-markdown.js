@@ -1,9 +1,19 @@
+import Ember from 'ember';
+
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/string';
+
 import markdownit from 'markdown-it';
 import attrs from 'markdown-it-attrs';
 
+const {
+  Handlebars: {
+    Utils: {
+      escapeExpression,
+    },
+  },
+} = Ember;
 
 // FIXME: use renderer override
 // SEE: https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md
@@ -25,8 +35,6 @@ function targetLinks(html) {
   return doc.body ? doc.body.innerHTML : '';
 }
 
-// TODO: this could be very slow!
-// change to markdown-it plugin and include interpolations?
 export function parseDefinitions(html) {
   // SEE: https://regex101.com/r/3Dpban/4
   const DEFINITIONS_EXPR = /\[definition:[\s+]?(?<definition>.*?)\](?<term>.*?)\[\/definition\]/g
@@ -35,9 +43,8 @@ export function parseDefinitions(html) {
 
   while ((match = DEFINITIONS_EXPR.exec(html))) {
     let { definition, term } = match.groups;
-    // FIXME: escape content
     let replacement = `
-      <span class="Definition" data-term="${term}" data-definition="${definition}">
+      <span class="Definition" data-term="${escapeExpression(term)}" data-definition="${escapeExpression(definition)}">
         ${term}
       </span>
     `;
