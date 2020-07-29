@@ -99,19 +99,19 @@ module('helper:render-markdown', function(hooks) {
   test('it parses definitions', async function(assert) {
     this.set('raw', `This is a [definition: a statement of the exact meaning of a word, especially in a dictionary]definition[/definition]`);
 
-      let expectedRet = `<p>This is a 
+    let expectedRet = `<p>This is a
       <span class="Definition" data-term="definition" data-definition="a statement of the exact meaning of a word, especially in a dictionary">
         definition
       </span>
     </p>`;
 
-      await render(hbs`{{render-markdown this.raw}}`);
+    await render(hbs`{{render-markdown this.raw}}`);
 
-      let innerHTML = this.element.innerHTML.trim();
+    let innerHTML = this.element.innerHTML.trim();
 
-      assert.equal(
-        innerHTML,
-        expectedRet
-      );
-    });
+    assert.equal(
+      innerHTML,
+      expectedRet
+    );
+  });
 });
