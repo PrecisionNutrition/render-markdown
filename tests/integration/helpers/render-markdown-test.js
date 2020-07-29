@@ -68,7 +68,7 @@ module('helper:render-markdown', function(hooks) {
   });
 
   test('it supports attributes on elements', async function(assert) {
-    let expectedHtml = '<p><a href="example.com" target="new">a link</a></p>';
+    let expectedHtml = '<p><a href="example.com" target="new" rel="noopener noreferrer">a link</a></p>';
 
     this.set('raw', '[a link](example.com){target=new}');
 

@@ -15,25 +15,23 @@ const {
   },
 } = Ember;
 
-// FIXME: use renderer override
-// SEE: https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md
-function targetLinks(html) {
-  let origin = window.location.origin;
+// SEE: https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 
-  let parser = new DOMParser();
-  let doc = parser.parseFromString(html, 'text/html');
-  let nodes = doc.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
+const md = markdownit({ html: true }).use(attrs);
 
-  for (let i = 0; i < nodes.length; i++) {
-    let node = nodes[i];
+// Remember old renderer, if overridden, or proxy to default renderer
+const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, _env, self) {
+  return self.renderToken(tokens, idx, options);
+};
 
-    node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener noreferrer');
-  }
+// Add target and rel to links when anchor tag is opened
+md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
+  tokens[idx].attrPush(['target', '_blank']);
+  tokens[idx].attrPush(['rel', 'noopener noreferrer']);
 
-  // IE 11 returns NULL on empty string :/
-  return doc.body ? doc.body.innerHTML : '';
-}
+  // pass token to default renderer.
+  return defaultRender(tokens, idx, options, env, self);
+};
 
 export function parseDefinitions(html) {
   // SEE: https://regex101.com/r/3Dpban/4
@@ -55,14 +53,12 @@ export function parseDefinitions(html) {
 }
 
 export function renderMarkdown([raw]) {
-  const renderer = markdownit({ html: true }).use(attrs);
-
   if (isEmpty(raw)) {
     return '';
   } else {
-    let html = renderer.render(raw);
+    let html = md.render(raw);
 
-    html = targetLinks(parseDefinitions(html));
+    html = parseDefinitions(html);
 
     return htmlSafe(html);
   }
