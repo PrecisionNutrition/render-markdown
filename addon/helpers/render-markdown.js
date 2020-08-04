@@ -33,8 +33,21 @@ md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
   return defaultRender(tokens, idx, options, env, self);
 };
 
+/**
+ * Look for definition "short-codes" and replace them with markup for a definition.
+ * The markup is then used to create Tippy tooltips in es-certification.
+ *
+ * Shortcode syntax:
+ *
+ *   [definition: <definition>]<term>[/definition]
+ *
+ * Example of shortcode:
+ *
+ *   [definition: used to express a greeting]hello[/definition]
+ *
+ * For more examples and a regexp explanation, see https://regex101.com/r/3Dpban/4
+ */
 export function parseDefinitions(html) {
-  // SEE: https://regex101.com/r/3Dpban/4
   const DEFINITIONS_EXPR = /\[definition:[\s+]?(?<definition>.*?)\](?<term>.*?)\[\/definition\]/g
 
   let match;
