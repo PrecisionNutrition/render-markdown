@@ -19,6 +19,7 @@
     "lint": "yarn lint:js && yarn lint:hbs",
     "start": "ember serve",
     "test": "ember test",
+    "tests": "ember test --server",
     "test:all": "ember try:each"
   },
   "dependencies": {

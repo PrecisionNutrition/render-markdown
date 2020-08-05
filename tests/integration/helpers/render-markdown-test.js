@@ -68,7 +68,7 @@ module('helper:render-markdown', function(hooks) {
   });
 
   test('it supports attributes on elements', async function(assert) {
-    let expectedHtml = '<p><a href="example.com" target="new">a link</a></p>';
+    let expectedHtml = '<p><a href="example.com" target="new" rel="noopener noreferrer">a link</a></p>';
 
     this.set('raw', '[a link](example.com){target=new}');
 
@@ -113,4 +113,53 @@ module('helper:render-markdown', function(hooks) {
       'noopener noreferrer'
     );
   });
+
+  test('it parses definitions', async function(assert) {
+    this.set('raw', `This is a [definition: a statement of the exact meaning of a word, especially in a dictionary]definition[/definition]`);
+
+    let expectedRet = `<p>This is a <span class="Definition" data-term="definition" data-definition="a statement of the exact meaning of a word, especially in a dictionary">
+        definition
+      </span></p>`;
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let innerHTML = this.element.innerHTML.trim();
+
+    assert.equal(
+      innerHTML,
+      expectedRet
+    );
+  });
+
+  test('it escapes definitions', async function(assert) {
+    this.set('raw', `This is a [definition: a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`);
+
+    let expectedRet = `<p>This is a <span class="Definition" data-term="definition" data-definition="a statement of the exact &amp;quot; meaning of a word, especially in a dictionary">
+        definition
+      </span></p>`;
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let innerHTML = this.element.innerHTML.trim();
+
+    assert.equal(
+      innerHTML,
+      expectedRet
+    );
+  });
+
+  test('it does not replace improperly formatted definitions', async function(assert) {
+    this.set('raw', `This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`);
+
+    let expectedRet = `<p>This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]</p>`;
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let innerHTML = this.element.innerHTML.trim();
+
+    assert.equal(
+      innerHTML,
+      expectedRet
+    );
+  })
 });

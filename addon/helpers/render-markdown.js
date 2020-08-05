@@ -1,36 +1,77 @@
+import Ember from 'ember';
+
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/string';
+
 import markdownit from 'markdown-it';
 import attrs from 'markdown-it-attrs';
 
-function targetLinks(html) {
-  let origin = window.location.origin;
+const {
+  Handlebars: {
+    Utils: {
+      escapeExpression,
+    },
+  },
+} = Ember;
 
-  let parser = new DOMParser();
-  let doc = parser.parseFromString(html, 'text/html');
-  let nodes = doc.querySelectorAll(`a[href^='mailto'], a[href^='http']:not([href^='${origin}'])`);
+// SEE: https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 
-  for (let i = 0; i < nodes.length; i++) {
-    let node = nodes[i];
+const md = markdownit({ html: true }).use(attrs);
 
-    node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener noreferrer');
+// Remember old renderer, if overridden, or proxy to default renderer
+const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, _env, self) {
+  return self.renderToken(tokens, idx, options);
+};
+
+// Add target and rel to links when anchor tag is opened
+md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
+  tokens[idx].attrPush(['target', '_blank']);
+  tokens[idx].attrPush(['rel', 'noopener noreferrer']);
+
+  // pass token to default renderer.
+  return defaultRender(tokens, idx, options, env, self);
+};
+
+/**
+ * Look for definition "short-codes" and replace them with markup for a definition.
+ * The markup is then used to create Tippy tooltips in es-certification.
+ *
+ * Shortcode syntax:
+ *
+ *   [definition: <definition>]<term>[/definition]
+ *
+ * Example of shortcode:
+ *
+ *   [definition: used to express a greeting]hello[/definition]
+ *
+ * For more examples and a regexp explanation, see https://regex101.com/r/3Dpban/4
+ */
+export function parseDefinitions(html) {
+  const DEFINITIONS_EXPR = /\[definition:[\s+]?(?<definition>.*?)\](?<term>.*?)\[\/definition\]/g
+
+  let match;
+
+  while ((match = DEFINITIONS_EXPR.exec(html))) {
+    let { definition, term } = match.groups;
+    let replacement = `
+      <span class="Definition" data-term="${escapeExpression(term)}" data-definition="${escapeExpression(definition)}">
+        ${term}
+      </span>
+    `.trim();
+    html = html.replace(match[0], replacement);
   }
 
-  // IE 11 returns NULL on empty string :/
-  return doc.body ? doc.body.innerHTML : '';
+  return html;
 }
 
 export function renderMarkdown([raw]) {
-  const renderer = markdownit({ html: true }).use(attrs);
-
   if (isEmpty(raw)) {
     return '';
   } else {
-    let html = renderer.render(raw);
+    let html = md.render(raw);
 
-    html = targetLinks(html);
+    html = parseDefinitions(html);
 
     return htmlSafe(html);
   }
