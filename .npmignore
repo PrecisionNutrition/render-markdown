@@ -7,6 +7,7 @@
 
 # misc
 /.bowerrc
+/.circleci
 /.editorconfig
 /.ember-cli
 /.env*
@@ -14,6 +15,8 @@
 /.eslintrc.js
 /.git/
 /.gitignore
+/.nix-node
+/.nvmrc
 /.template-lintrc.js
 /.travis.yml
 /.watchmanconfig
