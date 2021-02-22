@@ -55,7 +55,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: ['14']
-        embery-try-scenario: ['ember-release', 'ember-beta', 'ember-canary']
+        embery-try-scenario: ['ember-lts-3.16', 'ember-lts-3.20', 'ember-release', 'ember-beta', 'ember-canary']
 
     steps:
       - uses: actions/setup-node@v2
