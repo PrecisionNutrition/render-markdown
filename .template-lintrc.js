@@ -5,16 +5,11 @@ module.exports = {
 
   rules: {
     'no-curly-component-invocation': {
-      allow: [
-        'render-markdown',
-        'strip-markdown',
-      ],
+      allow: ['render-markdown', 'strip-markdown'],
     },
 
     'no-implicit-this': {
-      allow: [
-        'render-markdown',
-      ],
+      allow: ['render-markdown'],
     },
   },
 };

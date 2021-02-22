@@ -55,7 +55,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-              - .
+            - .
 
   lint_project:
     <<: *defaults
@@ -197,7 +197,7 @@ workflows:
 
       - run_with_jquery:
           requires:
-              - install_dependencies
+            - install_dependencies
 
       - run_old_lts_tests:
           requires:
