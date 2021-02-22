@@ -17,6 +17,12 @@ const {
 
 const md = markdownit({ html: true }).use(attrs);
 
+const REDIRECT_PATTERN = /#\/redirect\/activity\/([^/]+)\/?/;
+
+function isRedirectLinkWithoutTarget(token) {
+  return REDIRECT_PATTERN.test(token.attrGet('href')) && token.attrGet('target') === null;
+}
+
 // Remember old renderer, if overridden, or proxy to default renderer
 const defaultRender =
   md.renderer.rules.link_open ||
@@ -26,8 +32,12 @@ const defaultRender =
 
 // Add target and rel to links when anchor tag is opened
 md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-  tokens[idx].attrPush(['target', '_blank']);
-  tokens[idx].attrPush(['rel', 'noopener noreferrer']);
+  const token = tokens[idx];
+
+  if (!isRedirectLinkWithoutTarget(token)) {
+    token.attrPush(['target', '_blank']);
+    token.attrPush(['rel', 'noopener noreferrer']);
+  }
 
   // pass token to default renderer.
   return defaultRender(tokens, idx, options, env, self);

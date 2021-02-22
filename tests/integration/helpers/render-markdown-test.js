@@ -84,6 +84,27 @@ module('helper:render-markdown', function (hooks) {
     assert.equal(anchor.getAttribute('target'), '_blank');
   });
 
+  test('redirect links without explicit target attribute', async function (assert) {
+    this.set('raw', '[Hey](#/redirect/activity/123)');
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let anchor = find('a');
+
+    assert.equal(anchor.getAttribute('target'), undefined, 'does not add target attribute');
+    assert.equal(anchor.getAttribute('rel'), undefined, 'does not add rel attribute');
+  });
+
+  test('redirect link with explicit target attribute', async function (assert) {
+    this.set('raw', '[Hey again](#/redirect/activity/123){target="_blank"}');
+
+    await render(hbs`{{render-markdown this.raw}}`);
+
+    let anchor = find('a');
+
+    assert.equal(anchor.getAttribute('rel'), 'noopener noreferrer', 'does add rel attribute');
+  });
+
   test('it assigns a target to mailto links', async function (assert) {
     this.set('raw', '[Hey](mailto:joe@example.com)');
 
