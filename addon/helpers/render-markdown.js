@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 
 import markdownit from 'markdown-it';
 import attrs from 'markdown-it-attrs';
