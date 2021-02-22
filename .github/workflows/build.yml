@@ -12,8 +12,8 @@ jobs:
     steps:
       - run: exit 0
 
-  tests:
-    needs: install-dependencies
+  test:
+    needs: preflight
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,13 +28,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Restore cached dependencies
-      - uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -47,10 +40,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-yarn-
 
+      - name: Install Depedencies
+        run: scripts/ci/yarn_install
+
+      - name: Run Lint
+        run: yarn lint
+
       - name: Run default tests
-        run: yarn test
+        run: yarn test:ember
+
+      - name: Install dependencies (no lockfile)
+        run: |
+          rm -rf node_modules
+          yarn install --non-interactive --no-lockfile
+
+      - name: Run tests (floating dependencies)
+        run: yarn test:ember
 
   ember-try:
+    needs: preflight
+    runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
@@ -58,16 +68,11 @@ jobs:
         embery-try-scenario: ['ember-lts-3.16', 'ember-lts-3.20', 'ember-release', 'ember-beta', 'ember-canary']
 
     steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-
-      # Restore cached dependencies
-      - uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -81,8 +86,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-yarn-
 
+      - name: Install Depedencies
+        run: scripts/ci/yarn_install
+
       - name: 'Run Tests for ${{ matrix.embery-try-scenario }}'
-        run: yarn ember try:one ${{ matrix.embery-try-scenario} }} --skip-cleanup
+        run: yarn ember try:one ${{ matrix.embery-try-scenario }} --skip-cleanup
 
   # "Group" individual statuses into a pseudo-status that we can use for bors to watch for.
   ci-success:

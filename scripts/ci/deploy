@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -ueo pipefail
+
+for env in $CD_ENVIRONMENTS; do
+  curl -d command="/noe-deploy" \
+    -d text="fitpro:$GITHUB_SHA $env" \
+    -d user_id="githubaction" \
+    -d response_url="localhost" \
+    -d token="$SLACK_DEPLOY_TOKEN" \
+    https://noebot.precisionnutrition.com
+ done
