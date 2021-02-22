@@ -4,7 +4,7 @@ import { isEmpty } from '@ember/utils';
 
 import markdownit from 'markdown-it';
 
-export function stripMarkdown([markdown]/*, hash*/) {
+export function stripMarkdown([markdown] /*, hash*/) {
   if (isEmpty(markdown)) {
     markdown = '';
   }

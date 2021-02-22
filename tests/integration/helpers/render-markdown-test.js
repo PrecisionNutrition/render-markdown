@@ -3,22 +3,21 @@ import { setupRenderingTest } from 'ember-qunit';
 import { find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('helper:render-markdown', function(hooks) {
+module('helper:render-markdown', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('renders markdown', async function(assert) {
+  test('renders markdown', async function (assert) {
     this.set('raw', '# foo');
 
     await render(hbs`{{render-markdown this.raw}}`);
 
-    assert.equal(
-      this.element.innerHTML.trim(),
-      '<h1>foo</h1>'
-    );
+    assert.equal(this.element.innerHTML.trim(), '<h1>foo</h1>');
   });
 
-  test('more complicated markdown', async function(assert) {
-    this.set('raw', `#  Hey guy
+  test('more complicated markdown', async function (assert) {
+    this.set(
+      'raw',
+      `#  Hey guy
   How are you doing?
 
   Hopefully all is well.
@@ -31,7 +30,8 @@ module('helper:render-markdown', function(hooks) {
 
   Be cool,
 
-  J.`);
+  J.`
+    );
 
     let expectedRet = `<h1>Hey guy</h1>
 <p>How are you doing?</p>
@@ -52,23 +52,18 @@ module('helper:render-markdown', function(hooks) {
 
     let innerHTML = this.element.innerHTML.trim();
 
-    assert.equal(
-      innerHTML,
-      expectedRet
-    );
+    assert.equal(innerHTML, expectedRet);
   });
 
-  test('works with an empty param', async function(assert) {
+  test('works with an empty param', async function (assert) {
     await render(hbs`{{render-mardown}}`);
 
-    assert.equal(
-      this.element.innerHTML,
-      ''
-    );
+    assert.equal(this.element.innerHTML, '');
   });
 
-  test('it supports attributes on elements', async function(assert) {
-    let expectedHtml = '<p><a href="example.com" target="new" rel="noopener noreferrer">a link</a></p>';
+  test('it supports attributes on elements', async function (assert) {
+    let expectedHtml =
+      '<p><a href="example.com" target="new" rel="noopener noreferrer">a link</a></p>';
 
     this.set('raw', '[a link](example.com){target=new}');
 
@@ -76,46 +71,36 @@ module('helper:render-markdown', function(hooks) {
 
     let retHTML = this.element.innerHTML.trim();
 
-    assert.equal(
-      retHTML,
-      expectedHtml,
-      'markdown-it-attrs plugin is not working'
-    );
+    assert.equal(retHTML, expectedHtml, 'markdown-it-attrs plugin is not working');
   });
 
-  test('it assigns a target attribute to regular links', async function(assert) {
+  test('it assigns a target attribute to regular links', async function (assert) {
     this.set('raw', '[Hey](http://example.com)');
 
     await render(hbs`{{render-markdown this.raw}}`);
 
     let anchor = find('a');
 
-    assert.equal(
-      anchor.getAttribute('target'),
-      '_blank'
-    );
+    assert.equal(anchor.getAttribute('target'), '_blank');
   });
 
-  test('it assigns a target to mailto links', async function(assert) {
+  test('it assigns a target to mailto links', async function (assert) {
     this.set('raw', '[Hey](mailto:joe@example.com)');
 
     await render(hbs`{{render-markdown this.raw}}`);
 
     let anchor = find('a');
 
-    assert.equal(
-      anchor.getAttribute('target'),
-      '_blank'
-    );
+    assert.equal(anchor.getAttribute('target'), '_blank');
 
-    assert.equal(
-      anchor.getAttribute('rel'),
-      'noopener noreferrer'
-    );
+    assert.equal(anchor.getAttribute('rel'), 'noopener noreferrer');
   });
 
-  test('it parses definitions', async function(assert) {
-    this.set('raw', `This is a [definition: a statement of the exact meaning of a word, especially in a dictionary]definition[/definition]`);
+  test('it parses definitions', async function (assert) {
+    this.set(
+      'raw',
+      `This is a [definition: a statement of the exact meaning of a word, especially in a dictionary]definition[/definition]`
+    );
 
     let expectedRet = `<p>This is a <span class="Definition" data-term="definition" data-definition="a statement of the exact meaning of a word, especially in a dictionary">
         definition
@@ -125,14 +110,14 @@ module('helper:render-markdown', function(hooks) {
 
     let innerHTML = this.element.innerHTML.trim();
 
-    assert.equal(
-      innerHTML,
-      expectedRet
-    );
+    assert.equal(innerHTML, expectedRet);
   });
 
-  test('it escapes definitions', async function(assert) {
-    this.set('raw', `This is a [definition: a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`);
+  test('it escapes definitions', async function (assert) {
+    this.set(
+      'raw',
+      `This is a [definition: a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`
+    );
 
     let expectedRet = `<p>This is a <span class="Definition" data-term="definition" data-definition="a statement of the exact &amp;quot; meaning of a word, especially in a dictionary">
         definition
@@ -142,14 +127,14 @@ module('helper:render-markdown', function(hooks) {
 
     let innerHTML = this.element.innerHTML.trim();
 
-    assert.equal(
-      innerHTML,
-      expectedRet
-    );
+    assert.equal(innerHTML, expectedRet);
   });
 
-  test('it does not replace improperly formatted definitions', async function(assert) {
-    this.set('raw', `This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`);
+  test('it does not replace improperly formatted definitions', async function (assert) {
+    this.set(
+      'raw',
+      `This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]`
+    );
 
     let expectedRet = `<p>This is a [definition a statement of the exact " meaning of a word, especially in a dictionary]definition[/definition]</p>`;
 
@@ -157,9 +142,6 @@ module('helper:render-markdown', function(hooks) {
 
     let innerHTML = this.element.innerHTML.trim();
 
-    assert.equal(
-      innerHTML,
-      expectedRet
-    );
-  })
+    assert.equal(innerHTML, expectedRet);
+  });
 });

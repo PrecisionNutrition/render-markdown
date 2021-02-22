@@ -3,14 +3,17 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('helper:strip-markdown', function(hooks) {
+module('helper:strip-markdown', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it strips markdown and renders plain text', async function(assert) {
-    this.set('markdown', `*hey*
+  test('it strips markdown and renders plain text', async function (assert) {
+    this.set(
+      'markdown',
+      `*hey*
 
   * Yo
-  * Dawg`);
+  * Dawg`
+    );
 
     let expected = `hey
 
@@ -21,9 +24,6 @@ Dawg
 
     await render(hbs`{{strip-markdown markdown}}`);
 
-    assert.equal(
-      this.element.textContent,
-      expected
-    );
+    assert.equal(this.element.textContent, expected);
   });
 });

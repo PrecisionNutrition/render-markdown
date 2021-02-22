@@ -2,16 +2,14 @@ import Ember from 'ember';
 
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
-import { htmlSafe } from '@ember/string';
+import { htmlSafe } from '@ember/template';
 
 import markdownit from 'markdown-it';
 import attrs from 'markdown-it-attrs';
 
 const {
   Handlebars: {
-    Utils: {
-      escapeExpression,
-    },
+    Utils: { escapeExpression },
   },
 } = Ember;
 
@@ -20,12 +18,14 @@ const {
 const md = markdownit({ html: true }).use(attrs);
 
 // Remember old renderer, if overridden, or proxy to default renderer
-const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, _env, self) {
-  return self.renderToken(tokens, idx, options);
-};
+const defaultRender =
+  md.renderer.rules.link_open ||
+  function (tokens, idx, options, _env, self) {
+    return self.renderToken(tokens, idx, options);
+  };
 
 // Add target and rel to links when anchor tag is opened
-md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   tokens[idx].attrPush(['target', '_blank']);
   tokens[idx].attrPush(['rel', 'noopener noreferrer']);
 
@@ -48,14 +48,16 @@ md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
  * For more examples and a regexp explanation, see https://regex101.com/r/3Dpban/4
  */
 export function parseDefinitions(html) {
-  const DEFINITIONS_EXPR = /\[definition:[\s+]?(?<definition>.*?)\](?<term>.*?)\[\/definition\]/g
+  const DEFINITIONS_EXPR = /\[definition:[\s+]?(?<definition>.*?)\](?<term>.*?)\[\/definition\]/g;
 
   let match;
 
   while ((match = DEFINITIONS_EXPR.exec(html))) {
     let { definition, term } = match.groups;
     let replacement = `
-      <span class="Definition" data-term="${escapeExpression(term)}" data-definition="${escapeExpression(definition)}">
+      <span class="Definition" data-term="${escapeExpression(
+        term
+      )}" data-definition="${escapeExpression(definition)}">
         ${term}
       </span>
     `.trim();
